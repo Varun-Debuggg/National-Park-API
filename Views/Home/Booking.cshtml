@@ -1,0 +1,147 @@
+﻿@model NationalParkWebApp_3.Models.Booking
+
+
+@{
+    ViewData["Title"] = "Booking";
+}
+
+<form  method="post">
+    @* @if (Model.Id != 0)
+    {
+    <input type="hidden" asp-for="@Model.Id" />
+    }*@
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="text-center">
+        <h2 class="text text-info">NationalPark Booking</h2>
+    </div>
+    <div class="container border p-2 m-4">
+        <div class="col-8 row">
+
+            <div class="row my-2 ">
+                <div class="col-5">
+                    <label>Name</label>
+                </div>
+                <div class="col-7">
+                    <input type="text" asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row my-2">
+                <div class="col-5">
+                    <label>Address</label>
+                </div>
+                <div class="col-7">
+                    <input type="text" asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-5">
+                    <label>Email</label>
+                </div>
+                <div class="col-7">
+                    <input type="text" asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-5">
+                    <label>Phone Number</label>
+                </div>
+                <div class="col-7">
+                    <input type="text" asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-5">
+                    <label>Date</label>
+                </div>
+                <div class="col-7">
+                    <input asp-for="Date" class="form-control" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-4">
+                    <label>Adult</label>
+                </div>
+                <div class="col-4">
+                    <input asp-for="Adult" class="form-control" />
+                    <span asp-validation-for="Adult" class="text-danger"></span>
+                </div>
+                <div class="col-4">
+                    <p>For Adult $100/per person ticket</p>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-4">
+                    <label>Child</label>
+                </div>
+                <div class="col-4">
+                    <input asp-for="Child" class="form-control" />
+                    <span asp-validation-for="Child" class="text-danger"></span>
+                </div>
+                <div class="col-4">
+                    <p>For Child $50/per person ticket</p>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-5">
+                    <label>NationalPArk</label>
+                </div>
+                <div class="col-7">
+                    <p>@Model.NationalPark.Name</p>
+                    <span asp-validation-for="NationalParkId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row p-2 m-2">
+                <div class="col-4 offset-4">
+                    <button type="submit" class="btn btn-info form-control">
+                        Confirm Order
+                    </button>
+                </div>
+                <div class="col-4">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-success form-control">
+                        Back To List
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function () {
+        // Phone number validation
+        $('#PhoneNumber').on('input', function () {
+            var phoneNumber = $(this).val();
+            // Regular expression allowing common phone number formats
+            var regex = /^(\+?1\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+
+            if (!regex.test(phoneNumber)) {
+                $(this).next('.text-danger').text('Please enter a valid phone number').show();
+            } else {
+                $(this).next('.text-danger').hide();
+            }
+        });
+
+        // Adult and Child validation
+        $('#Adult, #Child').on('input', function () {
+            var value = $(this).val();
+            if (!/^\d+$/.test(value)) {
+                $(this).next('.text-danger').text('Please enter numbers only').show();
+            } else {
+                $(this).next('.text-danger').hide();
+            }
+        });
+    });
+</script>
+

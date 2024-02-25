@@ -1,0 +1,166 @@
+﻿@using Microsoft.Extensions.Options;
+@model NationalParkWebApp_3.Models.Booking
+@inject IOptions<NationalParkWebApp_3.StripeSettings> stripe;
+<form method="post">
+    <br />
+    <div class="backgroundWhiteBorder">
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-dark text-light ml-0 row container">
+                    <div class="col-6">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;
+                        Booking Summary
+                    </div>
+                    <div class="col-6 text-right">
+                        <a asp-action="Booking" asp-controller="Home" asp-route-id="@Model.NationalParkId" class="btn btn-outline-info btn-sm">Back To Confirm Booking</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container rounded p-2">
+                        <div class="row">
+                            <div class="col-12 col-lg-6 pb-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-info">Customer Booking Details:</span>
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Name</label>
+                                    </div>
+                                    <div class="col-9">
+                                        @*<input asp-for="OrderHeader.Name" type="text" class="form-control" />*@
+                                        <p>@Model.Name</p>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Email</label>
+                                    </div>
+                                    <div class="col-9">
+                                        @*<input asp-for="OrderHeader.PhoneNumber" type="text" class="form-control" />*@
+                                        <p>@Model.Email</p>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Address</label>
+                                    </div>
+                                    <div class="col-9">
+                                        @*<input asp-for="OrderHeader.StreetAddress" type="text" class="form-control" />*@
+                                        <p>@Model.Address</p>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Phone Number</label>
+                                    </div>
+                                    <div class="col-9">
+                                        @*<input asp-for="OrderHeader.City" type="text" class="form-control" />*@
+                                        <p>@Model.PhoneNumber</p>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>National Park Name</label>
+                                    </div>
+                                    <div class="col-9">
+                                        @*<input asp-for="OrderHeader.State" type="text" class="form-control" />*@
+                                        <p>@Model.NationalPark.Name</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-5 offset-lg-1">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-info">Booking Summary:</span>
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    @{
+                                        var adultAmt = 100 * int.Parse(Model.Adult);
+                                        var childAmt = 50 * int.Parse(Model.Child);
+                                        var amt = adultAmt + childAmt;
+                                    }
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="my-0">Adult</h6>
+                                            <small class="text-muted">Person: @Model.Adult</small>
+                                        </div>
+                                        <span class="text-muted">@Model.Adult x $100</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="my-0">Child</h6>
+                                            <small class="text-muted">Person: @Model.Child</small>
+                                        </div>
+                                        <span class="text-muted">@Model.Child x $50</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between bg-light">
+                                        <small class="text-info">Total (USD)</small>
+                                        <strong class="text-info">$@amt</strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        @*<div class="col-12 col-md-8 pt-2">
+                        <p style="color:maroon; font-size:14px;">Estimate Arrival Date: @DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()</p>
+                        </div>*@
+                        <div class="col-12 col-md-4 offset-8">
+                            @{
+                                var totalAmount = amt * 100;
+                            }
+                            <script src="https://checkout.stripe.com/checkout.js"
+                                    class="stripe-button"
+                                    data-key="@stripe.Value.PublishableKey"
+                                    data-amount="@totalAmount"
+                                    data-name="Book Project"
+                                    data-description="Get Book for testing"
+                                    data-locale="auto"
+                                    data-label="Confirm Book"
+                                    data-allow-remember-me="false"
+                                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"></script>
+                            <script>
+                                var el = document.getElementsByClassName("stripe-button-el");
+                                console.log(el[0]);
+                                el[0].style.display = "none";
+                            </script>
+                            <button type="submit" value="Confirm Book" class="btn btn-success form-control">Confirm Book</button>
+                            @*@{
+                            var totalAmount = Model.OrderHeader.OrderTotal;
+                            }
+                            <div id="paypal-button-container"></div>
+
+                            <script src="https://www.paypal.com/sdk/js?client-id=@paypal.Value.ClientId&currency=USD"></script>
+                            <script>
+                            paypal.Buttons({
+                            createOrder: function (data, actions) {
+                            return actions.order.create({
+                            purchase_units: [{
+                            amount: {
+                            value: '@totalAmount'
+                            }
+                            }]
+                            });
+                            },
+                            onApprove: function (data, actions) {
+                            return actions.order.capture().then(function (details) {
+                            // Redirect to your server-side endpoint with the PayPal order ID
+                            var orderId = details.id;
+                            window.location.href = '/Cart/ProcessPayPalPayment?orderId=' + orderId;
+                            });
+                            }
+                            }).render('#paypal-button-container');
+                            </script>*@
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
